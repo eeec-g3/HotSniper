@@ -16,6 +16,7 @@
 #include "policies/dvfsFixedPower.h"
 #include "policies/dvfsTestStaticPower.h"
 #include "policies/mapFirstUnused.h"
+#include "policies/dvfsOndemand.h"
 
 #include <iomanip>
 #include <random>
@@ -294,6 +295,26 @@ void SchedulerOpen::initDVFSPolicy(String policyName) {
 	cout << "[Scheduler] [Info]: Initializing DVFS policy" << endl;
 	if (policyName == "off") {
 		dvfsPolicy = NULL;
+	} else if (policyName == "ondemand"){
+        	float upThreshold = Sim()->getCfg()->getFloat(
+                	"scheduler/open/dvfs/ondemand/up_threshold");
+	        float downThreshold = Sim()->getCfg()->getFloat(
+        	        "scheduler/open/dvfs/ondemand/down_threshold");
+	        float dtmCriticalTemperature = Sim()->getCfg()->getFloat(
+        	        "scheduler/open/dvfs/ondemand/dtm_cricital_temperature");
+	        float dtmRecoveredTemperature = Sim()->getCfg()->getFloat(
+        	        "scheduler/open/dvfs/ondemand/dtm_recovered_temperature");
+	        dvfsPolicy = new DVFSOndemand(
+        	        performanceCounters,
+                	coreRows,
+	                coreColumns,
+        	        minFrequency,
+                	maxFrequency,
+	                frequencyStepSize,
+        	        upThreshold,
+                	downThreshold,
+	                dtmCriticalTemperature,
+        	        dtmRecoveredTemperature);
 	} else if (policyName == "maxFreq") {
 		dvfsPolicy = new DVFSMaxFreq(performanceCounters, coreRows, coreColumns, maxFrequency);
 	} else if (policyName == "testStaticPower") {

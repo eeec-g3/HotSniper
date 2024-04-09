@@ -268,6 +268,8 @@ def example():
                 # you can also use try_run instead
                 run(['{:.1f}GHz'.format(freq), 'maxFreq', 'slowDVFS'], get_instance(benchmark, parallelism, input_set='simsmall'))
 
+def ondemand_demo():
+    run(['{:.1f}GHz'.format(4), 'ondemand', 'fastDVFS'], get_instance('parsec-blackscholes', 3, input_set='simsmall'))
 
 def multi_program():
     # In this example, two instances of blackscholes will be scheduled.
@@ -300,7 +302,8 @@ def test_static_power():
 
 
 def main():
-    example()
+    # example()
+    ondemand_demo()
     #test_static_power()
     # multi_program()
 
