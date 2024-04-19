@@ -262,7 +262,7 @@ def example():
 
         min_parallelism = get_feasible_parallelisms(benchmark)[0]
         max_parallelism = get_feasible_parallelisms(benchmark)[-1]
-        for freq in (1, 2):
+        for freq in (2, 4):
             #for parallelism in (max_parallelism,):
             for parallelism in (3, ):
                 # you can also use try_run instead
@@ -298,11 +298,27 @@ def multi_program():
 def test_static_power():
     run(['4.0GHz', 'testStaticPower', 'slowDVFS'], get_instance('parsec-blackscholes', 3, input_set='simsmall'))
 
+def test_parsec_multithreading():
+    for benchmark in (
+        'parsec-canneal',
+    ):
+        for freq in (4, ):
+            run(['{:.1f}GHz'.format(freq), 'maxFreq', 'slowDVFS'], get_instance(benchmark, 2, input_set='simsmall'))
+
+def test_parsec_dvfs_asymmetric():
+    run(['4.0GHz', 'fixedFreq', 'slowDVFS'], get_instance('parsec-blackscholes', 3, input_set='simsmall'))
+
+def test_parsec_dvfs():
+    return
+
+def thread_migration():
+    return
+
+def multi_program():
+    return
 
 def main():
-    example()
-    #test_static_power()
-    # multi_program()
+    test_parsec_dvfs_asymmetric()
 
 if __name__ == '__main__':
     main()
