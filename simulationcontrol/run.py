@@ -304,7 +304,10 @@ def test_parsec_multithreading(benchmark):
         run(['{:.1f}GHz'.format(4), 'maxFreq', 'slowDVFS'], get_instance(benchmark, thread, input_set='simsmall'))
 
 def test_parsec_dvfs_asymmetric(benchmark):
-    run(['4.0GHz', 'fixedFreq', 'slowDVFS'], get_instance(benchmark, 4, input_set='simsmall'))
+    run(['4.0GHz', 'fixedFreq', 'slowDVFS', 'baselineDVFS'], get_instance(benchmark, 4, input_set='simsmall'))
+    run(['4.0GHz', 'fixedFreq', 'slowDVFS', 'bottleneck'], get_instance(benchmark, 4, input_set='simsmall'))
+    run(['4.0GHz', 'fixedFreq', 'slowDVFS', 'bottleneckMaster'], get_instance(benchmark, 4, input_set='simsmall'))
+    run(['4.0GHz', 'fixedFreq', 'slowDVFS', 'powerSaveMaster'], get_instance(benchmark, 4, input_set='simsmall'))
 
 def test_parsec_dvfs(benchmark):
     freqs = [ i * 0.1 for i in range(10, 40, 5) ]
