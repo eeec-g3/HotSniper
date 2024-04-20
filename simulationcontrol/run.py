@@ -298,28 +298,38 @@ def multi_program():
 def test_static_power():
     run(['4.0GHz', 'testStaticPower', 'slowDVFS'], get_instance('parsec-blackscholes', 3, input_set='simsmall'))
 
-def test_parsec_multithreading():
-    for benchmark in (
-        'parsec-canneal',
-    ):
-        for freq in (4, ):
-            run(['{:.1f}GHz'.format(freq), 'maxFreq', 'slowDVFS'], get_instance(benchmark, 2, input_set='simsmall'))
+def test_parsec_multithreading(benchmark):
+    min_parallelism = get_feasible_parallelisms(benchmark)[0]
+    for thread in range(min_parallelism, 5):
+        run(['{:.1f}GHz'.format(4), 'maxFreq', 'slowDVFS'], get_instance(benchmark, thread, input_set='simsmall'))
 
-def test_parsec_dvfs_asymmetric():
-    run(['4.0GHz', 'fixedFreq', 'slowDVFS'], get_instance('parsec-blackscholes', 3, input_set='simsmall'))
+def test_parsec_dvfs_asymmetric(benchmark):
+    run(['4.0GHz', 'fixedFreq', 'slowDVFS'], get_instance(benchmark, 4, input_set='simsmall'))
 
-def test_parsec_dvfs():
-    return
+def test_parsec_dvfs(benchmark):
+    freqs = [ i * 0.1 for i in range(20, 40, 5) ]
+    for freq in freqs:
+        run(["{:.1f}GHz".format(freq), "maxFreq", "slowDVFS"], get_instance(benchmark, 4, input_set="simsmall"))
 
-def thread_migration():
-    run(["{:.1f}GHz".format(4), "maxFreq", "slowDVFS", "fixedPairSwap", "fastMigration"], get_instance("parsec-blackscholes", 4, input_set="simsmall"))
+def thread_migration(benchmark):
+    run(["{:.1f}GHz".format(4), "maxFreq", "slowDVFS", "fixedPairSwap"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(4), "maxFreq", "slowDVFS", "fixedPairSwap", "fastMigration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(4), "maxFreq", "slowDVFS", "fixedPairSwap", "slowMigration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(4), "maxFreq", "slowDVFS", "fixedPairSwap", "superSlowMigration"], get_instance(benchmark, 4, input_set="simsmall"))
 
-def multi_program():
-    return
+def multi_program(benchmark):
+    run(['2.0GHz', 'maxFreq', 'slowDVFS'], benchmark)
 
 def main():
-    # test_parsec_dvfs_asymmetric()
-    thread_migration()
+    benchmark = "parsec-canneal"
+    test_parsec_multithreading(benchmark)
+    # test_parsec_dvfs(benchmark)
+    # For asymmetric, please write down the combination of the frequencies for each core.
+    # test_parsec_dvfs_asymmetric(benchmark)
+    # thread_migration(benchmark)
+
+    benchmark = 'splash2-fft-small-1,splash2-fft-small-1'
+    multi_program(benchmark)
 
 if __name__ == '__main__':
     main()
