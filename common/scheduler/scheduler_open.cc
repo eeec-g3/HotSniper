@@ -18,6 +18,7 @@
 #include "policies/mapFirstUnused.h"
 #include "policies/dvfsOndemand.h"
 #include "policies/dvfsFixedFreq.h"
+#include "policies/staticMigration.h"
 
 #include <iomanip>
 #include <random>
@@ -355,8 +356,11 @@ void SchedulerOpen::initMigrationPolicy(String policyName) {
 	cout << "[Scheduler] [Info]: Initializing migration policy" << endl;
 	if (policyName == "off") {
 		migrationPolicy = NULL;
-	} //else if (policyName ="XYZ") {... } //Place to instantiate a new migration logic. Implementation is put in "policies" package.
-	else {
+	} else if (policyName == "fixedPairSwap") {
+        int threads = Sim()->getCfg()->getFloat(
+                "scheduler/open/migration/fixedPairSwap/threads");
+        migrationPolicy = new StaticMigration(performanceCounters, coreRows, coreColumns, threads);
+	} else {
 		cout << "\n[Scheduler] [Error]: Unknown Migration Algorithm" << endl;
  		exit (1);
 	}

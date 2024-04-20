@@ -312,13 +312,14 @@ def test_parsec_dvfs():
     return
 
 def thread_migration():
-    return
+    run(["{:.1f}GHz".format(4), "maxFreq", "slowDVFS", "fixedPairSwap", "fastMigration"], get_instance("parsec-blackscholes", 4, input_set="simsmall"))
 
 def multi_program():
     return
 
 def main():
-    test_parsec_dvfs_asymmetric()
+    # test_parsec_dvfs_asymmetric()
+    thread_migration()
 
 if __name__ == '__main__':
     main()
