@@ -307,7 +307,7 @@ def test_parsec_dvfs_asymmetric(benchmark):
     run(['4.0GHz', 'fixedFreq', 'slowDVFS'], get_instance(benchmark, 4, input_set='simsmall'))
 
 def test_parsec_dvfs(benchmark):
-    freqs = [ i * 0.1 for i in range(20, 40, 5) ]
+    freqs = [ i * 0.1 for i in range(10, 40, 5) ]
     for freq in freqs:
         run(["{:.1f}GHz".format(freq), "maxFreq", "slowDVFS"], get_instance(benchmark, 4, input_set="simsmall"))
 
