@@ -310,7 +310,7 @@ def test_parsec_dvfs_asymmetric(benchmark):
     run(['4.0GHz', 'fixedFreq', 'slowDVFS', 'powerSaveMaster'], get_instance(benchmark, 4, input_set='simsmall'))
 
 def test_parsec_dvfs(benchmark):
-    freqs = [ i * 0.1 for i in range(10, 40, 5) ]
+    freqs = [ i * 0.1 for i in range(15, 40, 10) ]
     for freq in freqs:
         run(["{:.1f}GHz".format(freq), "maxFreq", "slowDVFS"], get_instance(benchmark, 4, input_set="simsmall"))
 
@@ -325,8 +325,8 @@ def multi_program(benchmark):
 
 def main():
     benchmark = "parsec-canneal"
-    test_parsec_multithreading(benchmark)
-    # test_parsec_dvfs(benchmark)
+    # test_parsec_multithreading(benchmark)
+    test_parsec_dvfs(benchmark)
     # For asymmetric, please write down the combination of the frequencies for each core.
     # test_parsec_dvfs_asymmetric(benchmark)
     # thread_migration(benchmark)
