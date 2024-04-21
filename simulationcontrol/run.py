@@ -310,29 +310,26 @@ def test_parsec_dvfs_asymmetric(benchmark):
     run(['4.0GHz', 'fixedFreq', 'slowDVFS', 'powerSaveMaster'], get_instance(benchmark, 4, input_set='simsmall'))
 
 def test_parsec_dvfs(benchmark):
-    freqs = [ i * 0.1 for i in range(10, 40, 5) ]
+    freqs = [ i * 0.1 for i in range(15, 40, 10) ]
     for freq in freqs:
         run(["{:.1f}GHz".format(freq), "maxFreq", "slowDVFS"], get_instance(benchmark, 4, input_set="simsmall"))
 
 def thread_migration(benchmark):
-    # Baseline
-    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS"], get_instance(benchmark, 4, input_set="simsmall"))
-
     run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap"], get_instance(benchmark, 4, input_set="simsmall"))
     run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "fastMigration"], get_instance(benchmark, 4, input_set="simsmall"))
-    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "slowMigration"], get_instance(benchmark, 4, input_set="simsmall"))
-    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "superSlowMigration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "fast+Migration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "fast++Migration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "fast+++Migration"], get_instance(benchmark, 4, input_set="simsmall"))
 
 def multi_program(benchmark):
     run(['2.0GHz', 'maxFreq', 'slowDVFS'], benchmark)
 
 def main():
-    benchmark = "parsec-canneal"
-    test_parsec_multithreading(benchmark)
+    benchmark = "parsec-blackscholes"
+    # test_parsec_multithreading(benchmark)
     # test_parsec_dvfs(benchmark)
-    # For asymmetric, please write down the combination of the frequencies for each core.
     # test_parsec_dvfs_asymmetric(benchmark)
-    # thread_migration(benchmark)
+    thread_migration(benchmark)
 
     benchmark = 'splash2-fft-small-1,splash2-fft-small-1'
     multi_program(benchmark)
