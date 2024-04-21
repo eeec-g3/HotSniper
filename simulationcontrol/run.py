@@ -310,7 +310,7 @@ def test_parsec_dvfs_asymmetric(benchmark):
     run(['4.0GHz', 'fixedFreq', 'slowDVFS', 'powerSaveMaster'], get_instance(benchmark, 4, input_set='simsmall'))
 
 def test_parsec_dvfs(benchmark):
-    freqs = [ i * 0.1 for i in range(15, 40, 10) ]
+    freqs = [ i * 0.1 for i in range(10, 40, 5) ]
     for freq in freqs:
         run(["{:.1f}GHz".format(freq), "maxFreq", "slowDVFS"], get_instance(benchmark, 4, input_set="simsmall"))
 
@@ -331,8 +331,8 @@ def main():
     # test_parsec_dvfs_asymmetric(benchmark)
     thread_migration(benchmark)
 
-    benchmark = 'splash2-fft-small-1,splash2-fft-small-1'
-    multi_program(benchmark)
+    # benchmark = 'splash2-fft-small-1,splash2-fft-small-1'
+    # multi_program(benchmark)
 
 if __name__ == '__main__':
     main()
