@@ -315,10 +315,13 @@ def test_parsec_dvfs(benchmark):
         run(["{:.1f}GHz".format(freq), "maxFreq", "slowDVFS"], get_instance(benchmark, 4, input_set="simsmall"))
 
 def thread_migration(benchmark):
-    run(["{:.1f}GHz".format(4), "maxFreq", "slowDVFS", "fixedPairSwap"], get_instance(benchmark, 4, input_set="simsmall"))
-    run(["{:.1f}GHz".format(4), "maxFreq", "slowDVFS", "fixedPairSwap", "fastMigration"], get_instance(benchmark, 4, input_set="simsmall"))
-    run(["{:.1f}GHz".format(4), "maxFreq", "slowDVFS", "fixedPairSwap", "slowMigration"], get_instance(benchmark, 4, input_set="simsmall"))
-    run(["{:.1f}GHz".format(4), "maxFreq", "slowDVFS", "fixedPairSwap", "superSlowMigration"], get_instance(benchmark, 4, input_set="simsmall"))
+    # Baseline
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS"], get_instance(benchmark, 4, input_set="simsmall"))
+
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "fastMigration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "slowMigration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "superSlowMigration"], get_instance(benchmark, 4, input_set="simsmall"))
 
 def multi_program(benchmark):
     run(['2.0GHz', 'maxFreq', 'slowDVFS'], benchmark)
