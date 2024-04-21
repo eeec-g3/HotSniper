@@ -316,10 +316,10 @@ def test_parsec_dvfs(benchmark):
 
 def thread_migration(benchmark):
     run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap"], get_instance(benchmark, 4, input_set="simsmall"))
-    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "fastMigration"], get_instance(benchmark, 4, input_set="simsmall"))
-    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "fast+Migration"], get_instance(benchmark, 4, input_set="simsmall"))
-    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "fast++Migration"], get_instance(benchmark, 4, input_set="simsmall"))
-    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "fast+++Migration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "basicMigration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "enhancedMigration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "premiumMigration"], get_instance(benchmark, 4, input_set="simsmall"))
+    run(["{:.1f}GHz".format(3), "maxFreq", "slowDVFS", "fixedPairSwap", "ultimateMigration"], get_instance(benchmark, 4, input_set="simsmall"))
 
 def multi_program(benchmark):
     run(['2.0GHz', 'maxFreq', 'slowDVFS'], benchmark)
