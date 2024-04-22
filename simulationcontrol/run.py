@@ -299,8 +299,8 @@ def test_static_power():
     run(['4.0GHz', 'testStaticPower', 'slowDVFS'], get_instance('parsec-blackscholes', 3, input_set='simsmall'))
 
 def test_parsec_multithreading(benchmark):
-    min_parallelism = get_feasible_parallelisms(benchmark)[0]
-    for thread in range(min_parallelism, 5):
+    feasible_parallelism = list(filter(lambda x: (x<=4), get_feasible_parallelisms(benchmark)))
+    for thread in feasible_parallelism:
         run(['{:.1f}GHz'.format(4), 'maxFreq', 'slowDVFS'], get_instance(benchmark, thread, input_set='simsmall'))
 
 def test_parsec_dvfs_asymmetric(benchmark):
