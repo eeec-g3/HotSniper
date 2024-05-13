@@ -300,9 +300,11 @@ def test_static_power():
 
 
 def main():
-    example()
+    #example()
     #test_static_power()
     # multi_program()
+    benchmark = "parsec-blackscholes"
+    run(['4.0GHz', 'fixedFreq', 'slowDVFS', 'baseline'], get_instance(benchmark, 4, input_set='simsmall'))
 
 if __name__ == '__main__':
     main()
