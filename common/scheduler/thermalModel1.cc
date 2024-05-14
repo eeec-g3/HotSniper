@@ -1,9 +1,18 @@
 #include "thermalModel.h"
+#include <math.h>
 #include <algorithm>
 #include <sstream>
 #include <fstream>
 #include <iomanip>
+#define M_E        2.71828182845904523536028747135 
 using namespace std;
+
+int pow(int a, int n) {
+	    // versions for float/double are defined in stdlib.
+	         int r = a;
+	             for (int i = 1; i < n; i++) r *= a;
+	                 return r;
+	               }
 
 ThermalModel::ThermalModel(unsigned int coreRows, unsigned int coreColumns, const String thermalModelFilename, double ambientTemperature, double maxTemperature, double inactivePower, double tdp, long pb_epoch_length, long pb_time_overhead)
     : ambientTemperature(ambientTemperature), maxTemperature(maxTemperature), inactivePower(inactivePower), tdp(tdp), pb_epoch_length(pb_epoch_length), pb_time_overhead(pb_time_overhead) {
@@ -461,9 +470,9 @@ std::vector<double> ThermalModel::powerBudgetTTSP(const std::vector<bool> &activ
          powers.at(activeIndices.at(i)) = powersTrunc.at(i);
     }
 
-    // for(auto i: powers){
-    //     std::cout << "The powers is " << i << std::endl;
-    // }
+    for(auto i: powers){
+        std::cout << "The powers is " << i << std::endl;
+    }
 
     return powers;
 }
