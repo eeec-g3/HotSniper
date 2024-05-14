@@ -325,11 +325,19 @@ def multi_program(benchmark):
     run(['2.0GHz', 'maxFreq', 'slowDVFS'], benchmark)
 
 def main():
-    benchmark = "parsec-blackscholes"
+    benchmarks = ['parsec-blackscholes',
+                'parsec-bodytrack',
+                'parsec-streamcluster',
+                'parsec-swaptions',
+                'parsec-x264',
+                'parsec-canneal',]
+
+    for benchmark in benchmarks:
+        run(['3.0GHz', 'edgeCoolingMode', 'fastDVFS'], get_instance(benchmark, 4, input_set='simsmall'))
+
     # test_parsec_multithreading(benchmark)
     # test_parsec_dvfs(benchmark)
     # test_parsec_dvfs_asymmetric(benchmark)
-    thread_migration(benchmark)
 
     # benchmark = 'splash2-fft-small-1,splash2-fft-small-1'
     # multi_program(benchmark)
