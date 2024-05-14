@@ -13,7 +13,7 @@
 #include "policies/dvfspolicy.h"
 #include "policies/mappingpolicy.h"
 #include "policies/migrationpolicy.h"
-
+#include "policies/dvfsEdgeCoolingMode.h"
 
 class SchedulerOpen : public SchedulerPinnedBase {
 

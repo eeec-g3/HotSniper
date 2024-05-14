@@ -343,7 +343,20 @@ void SchedulerOpen::initDVFSPolicy(String policyName) {
                                        freqCore2,
                                        freqCore3
         );
-    } else {
+    } else if (policyName == "edgeCoolingMode") {
+		float up_threshold = Sim()->getCfg()->getFloat(
+                "scheduler/open/dvfs/edgeCoolingMode/up_threshold");
+
+        dvfsPolicy = new DVFSEdgeCoolingMode(
+                performanceCounters,
+                coreRows,
+                coreColumns,
+                minFrequency,
+                maxFrequency,
+                200,
+                up_threshold
+                );
+	} else {
 		cout << "\n[Scheduler] [Error]: Unknown DVFS Algorithm" << endl;
  		exit (1);
 	}
