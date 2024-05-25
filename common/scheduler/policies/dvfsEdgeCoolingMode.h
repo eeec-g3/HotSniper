@@ -32,25 +32,29 @@ private:
     float temperature = 0.0;
     int frequency = 0;
     int reset_times = 1;
+    float upThreshold;
 
 public:
     LEARN_STATE state = LEARN_STATE::WAIT;
-    float desired_temp = 0.0;
     bool is_learning = true;
     float step_portion = 0.8;
     int start_freq = 0;
     int step_size = 200;
+    float MARGIN;
     DVFS_META dvfs_metadata = DVFS_META();
     bool init = true;
 
-    explicit CoreLearningMaterial(float desired) {
-        this->desired_temp = desired;
+    explicit CoreLearningMaterial(float upThreshold) {
+        this->MARGIN = 0.98;
+        this->upThreshold = upThreshold;
     }
 
-    void reset() {
+    void reset(float curr_temp) {
         // try to reset 5 times, it will be reset.
         // continuous learning.
-        if (this->reset_times % 10 == 0) {
+        float diff = curr_temp - this->upThreshold * this->MARGIN;
+        if (this->reset_times % 20 == 0 || diff > 10.0) {
+            std::cout << "reset system: " << std::to_string(curr_temp) << " " << std::to_string(this->upThreshold * this->MARGIN) << std::endl;
             this->is_learning = true;
             this->state = LEARN_STATE::WAIT;
             this->start_freq = 0;

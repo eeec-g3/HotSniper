@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 
-const float MARGIN = 0.92;
 using namespace std;
 
 DVFSEdgeCoolingMode::DVFSEdgeCoolingMode(
@@ -28,15 +27,15 @@ DVFSEdgeCoolingMode::DVFSEdgeCoolingMode(
     this->init = true;
     this->lastRoundFrequencies = vector<int>(this->coreRows * this->coreColumns);
 
-    for (int i = 0; i < this->coreRows * this->coreColumns; i++) {
-        learnModules.push_back(CoreLearningMaterial(this->upThreshold * MARGIN));
+    for (unsigned int i = 0; i < this->coreRows * this->coreColumns; i++) {
+        learnModules.push_back(CoreLearningMaterial(upThreshold));
     }
 }
 
 std::vector<int> DVFSEdgeCoolingMode::getFrequencies(
         const std::vector<int> &oldFrequencies,
         const std::vector<bool> &activeCores
-        ) {
+) {
     std::vector<int> frequencies(coreRows * coreColumns);
 
     for (unsigned int coreCounter = 0; coreCounter < coreRows * coreColumns; coreCounter++) {
@@ -50,6 +49,11 @@ std::vector<int> DVFSEdgeCoolingMode::getFrequencies(
         cout << " T=" << fixed << temperature << " C";
         cout << " utilization=" << fixed << utilization << endl;
 
+        if (utilization <= 0.05) {
+            frequencies.at(coreCounter) = this->minFrequency;
+            continue;
+        }
+
         if (activeCores.at(coreCounter)) {
             CoreLearningMaterial* learnModule = &learnModules[coreCounter];
 
@@ -61,12 +65,13 @@ std::vector<int> DVFSEdgeCoolingMode::getFrequencies(
                 continue;
             }
 
-            if (utilization == 0) {
+            if (temperature > upThreshold) {
+                cout << "Jump to minimum frequency" << endl;
                 frequencies.at(coreCounter) = this->minFrequency;
-                continue;
-            }
+                learnModule->MARGIN -= 0.02;
+                cout << "Current Margin: " << to_string(learnModule->MARGIN) << endl;
 
-            if (temperature >= upThreshold) {
+            } else if (temperature >= upThreshold * learnModule->MARGIN) {
                 if (learnModule->state == LEARN_STATE::WAIT || learnModule->state == LEARN_STATE::RUN) {
                     if (learnModule->state == LEARN_STATE::WAIT) {
                         learnModule->start_freq = core_freq;
@@ -91,7 +96,7 @@ std::vector<int> DVFSEdgeCoolingMode::getFrequencies(
                         int l_i = pair.level;
                         double a = pair.alpha;
 
-                        float target_temp = learnModule->desired_temp;
+                        float target_temp = learnModule->MARGIN * this->upThreshold;
 
                         // The predictive value.
                         int l_this = round((temperature - target_temp) / a);
@@ -117,7 +122,7 @@ std::vector<int> DVFSEdgeCoolingMode::getFrequencies(
                             frequencies.at(coreCounter) = oldFrequencies.at(coreCounter) - learnModule->step_size;
                         }
                     }
-                    learnModule->reset();
+                    learnModule->reset(temperature);
                 }
             } else {
                 cout << "[Safe temperature, no need to adjust]" << endl;
