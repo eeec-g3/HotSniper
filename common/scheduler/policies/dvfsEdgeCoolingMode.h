@@ -22,6 +22,7 @@ enum LEARN_STATE {
 struct alphaEpsilonPair {
     int level = 0;
     double alpha = 0.0;
+    double beta = 0.0;
     double epsilon = 0.0;
 };
 
@@ -29,8 +30,10 @@ typedef std::vector<alphaEpsilonPair> DVFS_META ;
 
 class CoreLearningMaterial {
 private:
-    float temperature = 0.0;
-    int frequency = 0;
+    float temperature_1 = 0.0;
+    float temperature_2 = 0.0;
+    int frequency_1 = 0;
+    int frequency_2 = 0;
     int reset_times = 1;
 
 public:
@@ -60,33 +63,47 @@ public:
     }
 
     void recordNewData(float temp, int freq) {
-        this->temperature = temp;
-        this->frequency = freq;
+        this->temperature_1 = this->temperature_2;
+	this->frequency_1 = this->frequency_2;
+	this->temperature_2 = temp;
+        this->frequency_2 = freq;
     }
 
     void calculateAlphaEpsilon(float curr_temp, int curr_freq) {
-        float old_temp = this->temperature;
-        int old_freq = this->frequency;
-        std::cout << "curr and old freq: " << std::to_string(curr_freq) << " " << std::to_string(old_freq) << std::endl;
+        float old_temp_1 = this->temperature_1;
+        float old_temp_2 = this->temperature_2;
+        int old_freq_1 = this->frequency_1;
+        int old_freq_2 = this->frequency_2;
+        
+	std::cout << "curr and old freq: " << std::to_string(curr_freq) << " " << std::to_string(old_freq_1) << " " << std::to_string(old_freq_2) << std::endl;
 
-        double a = (curr_temp - old_temp) / (float) (curr_freq - old_freq);
-        double e = (double) curr_temp - a * (double) curr_freq;
+        double a_nomi = (old_temp_1 - old_temp_2) - ((double) (old_freq_1 - old_freq_2) / (old_freq_1 - curr_freq)) * (old_temp_1 - curr_temp);
+        double a_deno = (old_freq_1 - old_freq_2) * (old_freq_2 - curr_freq);
+	double a = a_nomi / a_deno;
+	
+	double b_nomi = (old_temp_1 - old_temp_2) - ((double) ((old_freq_1 - old_freq_2) * (old_freq_1 + old_freq_2)) / ((old_freq_1 - curr_freq) * (old_freq_1 + curr_freq))) * (old_temp_1 - curr_temp); 
+	double b_deno = (old_freq_1 - old_freq_2) * (1 - (double) (old_freq_1 + old_freq_2) / (old_freq_1 + curr_freq)); 
+	double b = b_nomi / b_deno;
+	
+	double e = old_temp_1 - a * old_freq_1 * old_freq_1 - b * old_freq_1;
 
-        std::cout << "a & freq: " << std::to_string(a * (double) curr_freq) << std::endl;
+        std::cout << "a & b & e: " << a << ' ' << b << ' ' << e  << std::endl;
+        // std::cout << "a & freq: " << std::to_string(a * (double) curr_freq) << std::endl;
 
         auto pair = alphaEpsilonPair {};
         pair.level = this->start_freq - curr_freq;
         pair.alpha = a;
-        pair.epsilon = e;
+        pair.beta = b;
+	pair.epsilon = e;
         dvfs_metadata.push_back(pair);
     }
 
     float get_temperature() const {
-        return this->temperature;
+        return this->temperature_2;
     }
 
     int get_frequency() const {
-        return this->frequency;
+        return this->frequency_2;
     }
 };
 

@@ -90,24 +90,39 @@ std::vector<int> DVFSEdgeCoolingMode::getFrequencies(
                     for (auto pair : learnModule->dvfs_metadata) {
                         int l_i = pair.level;
                         double a = pair.alpha;
+			double b = pair.beta;
+			double e = pair.epsilon;
 
                         float target_temp = learnModule->desired_temp;
 
-                        // The predictive value.
-                        int l_this = round((temperature - target_temp) / a);
-                        cout << "calculated level" << to_string(l_this) << endl;
+			// The predictive value.
+                        int pred_freq_1 = (-b - sqrt(b * b - 4 * a * (e - target_temp))) / (2 * a); 
+                        int pred_freq_2 = (-b + sqrt(b * b - 4 * a * (e - target_temp))) / (2 * a); 
+			int l_this_1 = core_freq - pred_freq_1;
+			int l_this_2 = core_freq - pred_freq_2;
+
+                        cout << "calculated level" << to_string(l_this_1) << ' ' << to_string(l_this_2) << endl;
                         cout << "l_i" << to_string(l_i) << endl;
                         cout << "a: " << to_string(pair.alpha) << " e: " << to_string(pair.epsilon) << endl;
 
-                        if (l_this <= l_i && l_this > 0) {
-                            cout << "expected level" << to_string(l_this) << endl;
-                            frequencies.at(coreCounter) = oldFrequencies.at(coreCounter) - l_this;
+                        if (l_this_1 <= l_i && l_this_1 > 0) {
+                            cout << "expected level" << to_string(l_this_1) << endl;
+                            frequencies.at(coreCounter) = oldFrequencies.at(coreCounter) - l_this_1;
                             find_expected = true;
                             break;
-
-                        } else {
-                            l_prev = l_this;
-                        }
+                        } 
+			else
+			    if (l_this_2 <= l_i && l_this_2 > 0)
+			    {
+	                        cout << "expected level" << to_string(l_this_2) << endl;
+                            	frequencies.at(coreCounter) = oldFrequencies.at(coreCounter) - l_this_2;
+                            	find_expected = true;
+                            	break;
+			    }
+			    else 
+			    {
+                                l_prev = l_this_2;
+                            }
                     }
                     if (!find_expected) {
                         if (l_prev > 0 && (oldFrequencies.at(coreCounter) - l_prev) >= 500) {
